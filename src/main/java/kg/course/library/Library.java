@@ -154,6 +154,7 @@ public class Library {
 
         throw new NotFoundException("Выдача не найдена: " + loanId);
     }
+
     public void removeBook(Isbn isbn) {
         Book book = getBook(isbn);
 
@@ -170,5 +171,24 @@ public class Library {
 
         books.remove(isbn);
         copies.remove(isbn);
+    }
+    public Book updateBook(
+            Isbn isbn,
+            String title,
+            List<String> authors,
+            Integer year) {
+
+        Book oldBook = getBook(isbn);
+
+        Book updatedBook = new Book(
+                oldBook.isbn(),
+                title != null ? title : oldBook.title(),
+                authors != null ? authors : oldBook.authors(),
+                year != null ? year : oldBook.year()
+        );
+
+        books.put(isbn, updatedBook);
+
+        return updatedBook;
     }
 }

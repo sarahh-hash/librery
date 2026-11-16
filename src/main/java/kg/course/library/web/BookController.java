@@ -3,7 +3,7 @@ package kg.course.library.web;
 import kg.course.library.Book;
 import kg.course.library.Isbn;
 import kg.course.library.Library;
-
+import java.util.Map;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -80,5 +80,35 @@ public class BookController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteBook(@PathVariable String isbn) {
         library.removeBook(new Isbn(isbn));
+    }
+
+    @PatchMapping("/{isbn}")
+    public BookResponse updateBook(
+            @PathVariable String isbn,
+            @RequestBody Map<String, Object> body) {
+
+        String title = (String) body.get("title");
+
+        @SuppressWarnings("unchecked")
+        List<String> authors = (List<String>) body.get("authors");
+
+        Integer year = body.containsKey("year")
+                ? ((Number) body.get("year")).intValue()
+                : null;
+
+        Book updatedBook = library.updateBook(
+                new Isbn(isbn),
+                title,
+                authors,
+                year
+        );
+
+        Isbn bookIsbn = updatedBook.isbn();
+
+        return BookResponse.from(
+                updatedBook,
+                library.totalCopies(bookIsbn),
+                library.availableCopies(bookIsbn)
+        );
     }
 }

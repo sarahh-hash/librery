@@ -18,7 +18,9 @@ public class LibraryConfig {
 
     private static final Logger log =
             LoggerFactory.getLogger(LibraryConfig.class);
-
+    //@Bean — это аннотация, которая регистрирует объект в контейнере Spring.
+    // После этого Spring может автоматически внедрять
+    // его в другие классы с помощью Dependency Injection.
     @Bean
     public Library library() {
         return new Library();
